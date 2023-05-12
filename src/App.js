@@ -1,7 +1,7 @@
 import "./App.css";
 import Navbar from "./components/Navbar";
 import Card from "./components/Card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UploadForm from "./components/UploadForm";
 
 const photos = [
@@ -14,15 +14,32 @@ const photos = [
 ];
 
 function App() {
-  const [input, setInput] = useState();
+  const [count, setCount] =useState()
+  const [inputs, setInputs] = useState({ title: null, file: null, path: null });
   const [items, setItems] = useState(photos);
   const [isCollasped, collapse] = useState(false);
 
   const toggle = () => collapse(!isCollasped);
-  const handleOnChange = (e) => setInput(e.target.value);
+  const handleOnChange = (e) => {
+    if (e.target.name === "file") {
+      setInputs({
+        title: e.target.value,
+        file: e.target.files[0],
+        path: URL.createObjectURL(e.target.files[0]),
+      });
+    }else {
+      setInputs({...inputs,title:e.target.value})
+    }
+    
+  };
   const handleOnSubmit = (e) => {
-    e.preventDefault()
-    setItems([input,...items]);}
+    e.preventDefault();
+    setItems([inputs.path, ...items]);
+  };
+
+  useEffect (() => {
+    setCount(`you have ${items.length} image${items.length > 1 ? 's': ''}`)
+  }, [items])
 
   return (
     <>
@@ -38,6 +55,7 @@ function App() {
           onSubmit={handleOnSubmit}
         />
         <h1>Gallery</h1>
+        {count}
         <div className="row">
           {items.map((photo) => (
             <Card src={photo} />
