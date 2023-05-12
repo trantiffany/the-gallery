@@ -14,23 +14,33 @@ const photos = [
 ];
 
 function App() {
-  const [items, setItems] = useState(photos)
-  const [isCollasped, collapse] = useState(false)
+  const [input, setInput] = useState();
+  const [items, setItems] = useState(photos);
+  const [isCollasped, collapse] = useState(false);
 
   const toggle = () => collapse(!isCollasped);
+  const handleOnChange = (e) => setInput(e.target.value);
+  const handleOnSubmit = (e) => {
+    e.preventDefault()
+    setItems([input,...items]);}
 
   return (
     <>
       <Navbar />
       <div className="container text-center mt-5">
-        <button className="btn btn-success float-end" onClick={toggle}>{isCollasped ? 'Close' : 'Add'}</button>
-       <div className="clearfix mb-4">
-       </div>
-        <UploadForm isVisible={isCollasped}/>
+        <button className="btn btn-success float-end" onClick={toggle}>
+          {isCollasped ? "Close" : "Add"}
+        </button>
+        <div className="clearfix mb-4"></div>
+        <UploadForm
+          isVisible={isCollasped}
+          onChange={handleOnChange}
+          onSubmit={handleOnSubmit}
+        />
         <h1>Gallery</h1>
         <div className="row">
           {items.map((photo) => (
-            <Card src={photo}/>
+            <Card src={photo} />
           ))}
         </div>
       </div>
