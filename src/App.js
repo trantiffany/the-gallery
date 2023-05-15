@@ -1,20 +1,33 @@
 import "./App.css";
 import Navbar from "./components/Navbar";
 import Card from "./components/Card";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useReducer } from "react";
 import UploadForm from "./components/UploadForm";
 
-const photos = [
-  "https://picsum.photos/id/1001/200/200",
-  "https://picsum.photos/id/1002/200/200",
-  "https://picsum.photos/id/1003/200/200",
-  "https://picsum.photos/id/1004/200/200",
-  "https://picsum.photos/id/1005/200/200",
-  "https://picsum.photos/id/1006/200/200",
-];
+const photos = [];
+
+const initialState = {
+  items: photos,
+  count: photos.length,
+  inputs: { title: null, file: null, path: null },
+  isCollasped: false,
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "setItem":
+      return {
+        ...state,
+        items: [action.payload.path, ...state.items],
+      };
+    default:
+      return state;
+  }
+}
 
 function App() {
-  const [count, setCount] =useState()
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const [count, setCount] = useState();
   const [inputs, setInputs] = useState({ title: null, file: null, path: null });
   const [items, setItems] = useState(photos);
   const [isCollasped, collapse] = useState(false);
@@ -27,19 +40,24 @@ function App() {
         file: e.target.files[0],
         path: URL.createObjectURL(e.target.files[0]),
       });
-    }else {
-      setInputs({...inputs,title:e.target.value})
+    } else {
+      setInputs({ ...inputs, title: e.target.value });
     }
-    
   };
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    setItems([inputs.path, ...items]);
+    dispatch({ type: "setItem", payload: { path: inputs.path } });
+    setInputs({ title: null, file: null, path: null });
+    collapse(false);
   };
 
-  useEffect (() => {
-    setCount(`you have ${items.length} image${items.length > 1 ? 's': ''}`)
-  }, [items])
+  useEffect(() => {
+    console.log("state", state);
+  }, [state.items]);
+
+  useEffect(() => {
+    setCount(`you have ${items.length} image${items.length > 1 ? "s" : ""}`);
+  }, [items]);
 
   return (
     <>
@@ -50,6 +68,7 @@ function App() {
         </button>
         <div className="clearfix mb-4"></div>
         <UploadForm
+          inputs={inputs}
           isVisible={isCollasped}
           onChange={handleOnChange}
           onSubmit={handleOnSubmit}
@@ -57,8 +76,8 @@ function App() {
         <h1>Gallery</h1>
         {count}
         <div className="row">
-          {items.map((photo) => (
-            <Card src={photo} />
+          {state.items.map((photo, index) => (
+            <Card key={index} src={photo.path} />
           ))}
         </div>
       </div>
