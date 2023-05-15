@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-const Preview = ({path}) => {
+const Preview = ({ path }) => {
   return (
     path && (
       <div
@@ -8,7 +8,7 @@ const Preview = ({path}) => {
         style={{
           width: "30%",
           height: "300px",
-          backgroundImage: `url(${path})`,
+          backgroundImage: `url(${path}`,
           backgroundSize: "cover",
         }}
       ></div>
@@ -18,7 +18,7 @@ const Preview = ({path}) => {
 
 const UploadForm = ({ inputs, isVisible, onChange, onSubmit }) => {
   const isDisabled = useMemo(() => {
-    return !!Object.values(inputs).some((input) => !input); 
+    return !!Object.values(inputs).some((input) => !input);
   }, [inputs]);
   return (
     isVisible && (
@@ -50,11 +50,11 @@ const UploadForm = ({ inputs, isVisible, onChange, onSubmit }) => {
               />
             </div>
             <button
-              disabled={isDisabled}
               type="submit"
               className="btn btn-success float-end"
+              disabled={isDisabled}
             >
-              Save Changes
+              Save changes
             </button>
           </form>
         </div>
@@ -62,5 +62,4 @@ const UploadForm = ({ inputs, isVisible, onChange, onSubmit }) => {
     )
   );
 };
-
 export default UploadForm;
