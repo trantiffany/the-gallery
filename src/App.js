@@ -1,7 +1,6 @@
 import "./App.css";
 import Card from "./components/Card";
-import { useEffect, useState, useReducer, useMemo } from "react";
-import UploadForm from "./components/UploadForm";
+import { useReducer, useMemo } from "react";
 import Layout from "./components/Layout";
 
 const photos = [];
@@ -52,8 +51,7 @@ function reducer(state, action) {
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const toggle = (bool) =>
-    dispatch({ type: "collapse", payload: { bool: !state.isCollapsed } });
+  const toggle = (bool) => dispatch({ type: "collapse", payload: { bool } });
   const handleOnChange = (e) =>
     dispatch({ type: "setInputs", payload: { value: e } });
   const handleOnSubmit = (e) => {
@@ -78,8 +76,8 @@ function App() {
       <h1 className="text-center">Gallery</h1>
       {count}
       <div className="row">
-        {state.items.map((photo, index) => (
-          <Card key={index} src={photo.path} />
+        {state.items.map((item, index) => (
+          <Card key={index} {...item} />
         ))}
       </div>
     </Layout>

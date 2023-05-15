@@ -1,5 +1,4 @@
-import { createContext } from "react";
-import { useReducer } from "react";
+import { createContext, useReducer } from "react";
 
 const Context = createContext();
 
@@ -50,10 +49,8 @@ function reducer(state, action) {
 
 const Provider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-
   return (
     <Context.Provider value={{ state, dispatch }}>{children}</Context.Provider>
   );
 };
-
 export default Provider;
