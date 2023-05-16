@@ -1,4 +1,5 @@
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
+import { Context } from "../context";
 
 const Preview = ({ path }) => {
   return (
@@ -16,20 +17,30 @@ const Preview = ({ path }) => {
   );
 };
 
-const UploadForm = ({ inputs, isVisible, onChange, onSubmit }) => {
+const UploadForm = () => {
+  const { dispatch, state } = useContext(Context);
+
   const isDisabled = useMemo(() => {
-    return !!Object.values(inputs).some((input) => !input);
-  }, [inputs]);
+    return !!Object.values(state.inputs).some((input) => !input);
+  }, [state.inputs]);
+
+  const handleOnChange = (e) =>
+    dispatch({ type: "setInputs", payload: { value: e } });
+  const handleOnSubmit = (e) => {
+    e.preventDefault();
+    dispatch({ type: "setItem" });
+    dispatch({ type: "collapse", payload: { bool: false } });
+  };
   return (
-    isVisible && (
+    state.isCollapsed && (
       <>
         <p className="display-6 text-center mb-3">Upload Stock Image</p>
         <div className="mb-5 d-flex align-items-center justify-content-center">
-          <Preview {...inputs} />
+          <Preview />
           <form
             className="mb-2"
             style={{ textAlign: "left" }}
-            onSubmit={onSubmit}
+            onSubmit={handleOnSubmit}
           >
             <div className="mb-3">
               <input
@@ -38,7 +49,7 @@ const UploadForm = ({ inputs, isVisible, onChange, onSubmit }) => {
                 name="title"
                 placeholder="title"
                 aria-describedby="text"
-                onChange={onChange}
+                onChange={handleOnChange}
               />
             </div>
             <div className="mb-3">
@@ -46,7 +57,7 @@ const UploadForm = ({ inputs, isVisible, onChange, onSubmit }) => {
                 type="file"
                 className="form-control"
                 name="file"
-                onChange={onChange}
+                handleOnChange={handleOnChange}
               />
             </div>
             <button
