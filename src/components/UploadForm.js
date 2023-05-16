@@ -19,11 +19,10 @@ const Preview = ({ path }) => {
 
 const UploadForm = () => {
   const { dispatch, state } = useContext(Context);
-
+  const { isCollapsed: isVisible, inputs } = state; // destructuring the current state
   const isDisabled = useMemo(() => {
-    return !!Object.values(state.inputs).some((input) => !input);
-  }, [state.inputs]);
-
+    return !!Object.values(inputs).some((input) => !input);
+  }, [inputs]);
   const handleOnChange = (e) =>
     dispatch({ type: "setInputs", payload: { value: e } });
   const handleOnSubmit = (e) => {
@@ -31,8 +30,9 @@ const UploadForm = () => {
     dispatch({ type: "setItem" });
     dispatch({ type: "collapse", payload: { bool: false } });
   };
+
   return (
-    state.isCollapsed && (
+    isVisible && (
       <>
         <p className="display-6 text-center mb-3">Upload Stock Image</p>
         <div className="mb-5 d-flex align-items-center justify-content-center">
@@ -57,7 +57,7 @@ const UploadForm = () => {
                 type="file"
                 className="form-control"
                 name="file"
-                handleOnChange={handleOnChange}
+                onChange={handleOnChange}
               />
             </div>
             <button
